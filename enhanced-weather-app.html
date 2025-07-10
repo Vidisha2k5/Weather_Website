@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Weather App - Complete Features</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="forecast.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional styles for loading and error states */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0984e3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #333;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .error-message i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .error-message p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Quick city buttons */
+        .quick-cities {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .city-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .city-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-container">
+        <div id="clouds" class="clouds"></div>
+        <div id="rain" class="rain"></div>
+        <div id="snow" class="snow"></div>
+        <div id="sunRays" class="sun-rays"></div>
+        <div id="lightning" class="lightning"></div>
+    </div>
+
+    <div class="weather-container" id="weatherContainer">
+        <div class="weather-card">
+            <h1 style="text-align: center; color: white; margin-bottom: 20px;">
+                🌦️ Enhanced Weather App
+            </h1>
+
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Enter city name...">
+                </div>
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="currentLocationBtn" class="current-location-btn">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Quick City Selection -->
+            <div class="quick-cities">
+                <button class="city-btn" onclick="quickSearch('Mumbai')">🇮🇳 Mumbai</button>
+                <button class="city-btn" onclick="quickSearch('Delhi')">🇮🇳 Delhi</button>
+                <button class="city-btn" onclick="quickSearch('Kolkata')">🇮🇳 Kolkata</button>
+                <button class="city-btn" onclick="quickSearch('Bangalore')">🇮🇳 Bangalore</button>
+                <button class="city-btn" onclick="quickSearch('Chennai')">🇮🇳 Chennai</button>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Enter a city name to get comprehensive weather information!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">--</h2>
+                    <p id="countryName">--</p>
+                    <p id="currentTime">--</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">--°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">--</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">--°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Weather Details Grid -->
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                        <span class="detail-label">Real Feel</span>
+                        <span class="detail-value" id="realFeel">--°</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span class="detail-label">Wind Speed</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-compass"></i>
+                    <div>
+                        <span class="detail-label">Wind Direction</span>
+                        <span class="detail-value" id="windDirection">--</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-gauge-high"></i>
+                    <div>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-sun"></i>
+                    <div>
+                        <span class="detail-label">UV Index</span>
+                        <span class="detail-value" id="uvIndex">--</span>
+                    </div>
+                </div>
+                <div class="detail-item aqi-item">
+                    <i class="fas fa-lungs"></i>
+                    <div>
+                        <span class="detail-label">Air Quality</span>
+                        <span class="detail-value" id="aqi">--</span>
+                        <span class="aqi-status" id="aqiStatus">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5-Day Forecast -->
+            <div class="forecast-section" id="forecastSection">
+                <h3><i class="fas fa-calendar-alt"></i> 5-Day Forecast</h3>
+                <div class="forecast-container" id="forecastContainer">
+                    <!-- Forecast items will be populated here -->
+                </div>
+            </div>
+
+            <!-- Enhanced Outfit Recommendations -->
+            <div class="outfit-section" id="outfitSection">
+                <h3><i class="fas fa-tshirt"></i> Smart Outfit Recommendations</h3>
+                <div class="outfit-recommendation" id="outfitRecommendation">
+                    <div class="outfit-items" id="outfitItems"></div>
+                    <p class="outfit-advice" id="outfitAdvice">Get weather data to see personalized recommendations!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Getting weather data...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p id="errorText">Something went wrong!</p>
+        <button id="retryBtn" class="retry-btn">Try Again</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let weatherApp;
+
+        // Quick search function
+        function quickSearch(city) {
+            const input = document.getElementById('locationInput');
+            input.value = city;
+            if (weatherApp) {
+                weatherApp.searchWeather();
+            }
+        }
+
+        // Initialize the enhanced weather app
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Enhanced Weather App loaded');
+            weatherApp = new WeatherApp();
+            
+            // Auto-test with Mumbai after 2 seconds
+            setTimeout(() => {
+                console.log('🧪 Running auto-test with Mumbai...');
+                quickSearch('Mumbai');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

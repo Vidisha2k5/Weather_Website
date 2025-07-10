@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Weather Mood Player Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container" id="weatherContainer">
+        <!-- Background Animation Container -->
+        <div class="animation-container" id="animationContainer">
+            <div class="clouds" id="clouds"></div>
+            <div class="rain" id="rain"></div>
+            <div class="snow" id="snow"></div>
+            <div class="lightning" id="lightning"></div>
+            <div class="sun-rays" id="sunRays"></div>
+        </div>
+
+        <!-- Main Weather Card -->
+        <div class="weather-card">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Search city to test Weather Mood..." autocomplete="off">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button id="currentLocationBtn" class="current-location-btn" title="Use current location">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Feature Demo Instructions -->
+            <div style="background: rgba(76, 175, 80, 0.2); padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                <h3 style="color: #4CAF50; margin-bottom: 10px;">
+                    <i class="fas fa-headphones"></i> Weather Mood Player Demo
+                </h3>
+                <p style="font-size: 14px; opacity: 0.9; line-height: 1.4;">
+                    🎵 <strong>Audio Features:</strong> Automatic weather-based background music<br>
+                    🎨 <strong>Visual Features:</strong> Animated icons & dynamic gradients<br>
+                    📱 <strong>Mobile Optimized:</strong> Responsive design & touch-friendly controls<br>
+                    🔊 <strong>Volume Control:</strong> Adjustable audio with mute/unmute
+                </p>
+            </div>
+
+            <!-- Test Cities -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <h4 style="color: #FFC107; margin-bottom: 10px;">
+                    <i class="fas fa-flask"></i> Test Cities
+                </h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <button onclick="testCity('Barasat')" style="background: rgba(33, 150, 243, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        🌧️ Barasat (Rainy)
+                    </button>
+                    <button onclick="testCity('Dubai')" style="background: rgba(255, 193, 7, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        ☀️ Dubai (Sunny)
+                    </button>
+                    <button onclick="testCity('Moscow')" style="background: rgba(158, 158, 158, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        ❄️ Moscow (Snowy)
+                    </button>
+                    <button onclick="testCity('London')" style="background: rgba(96, 125, 139, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        ☁️ London (Cloudy)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Test the Weather Mood Player with different cities!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">--</h2>
+                    <p id="countryName">--</p>
+                    <p id="currentTime">--</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">--°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">--</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">--°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Weather Mood Section -->
+            <div class="weather-mood-section" id="weatherMoodSection">
+                <div class="mood-header">
+                    <h3><i class="fas fa-headphones"></i> Weather Mood</h3>
+                    <button id="moodToggle" class="mood-toggle-btn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+                
+                <div class="mood-player" id="moodPlayer">
+                    <!-- Animated Weather Icons -->
+                    <div class="mood-animation" id="moodAnimation">
+                        <div class="weather-particles" id="weatherParticles"></div>
+                        <div class="mood-weather-icon" id="moodWeatherIcon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mood-controls">
+                        <button id="playPauseBtn" class="mood-control-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="mood-info">
+                            <span id="currentMoodTrack">Sunny Day Vibes</span>
+                            <div class="volume-control">
+                                <i class="fas fa-volume-down"></i>
+                                <input type="range" id="volumeSlider" min="0" max="100" value="30" class="volume-slider">
+                                <i class="fas fa-volume-up"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Elements -->
+                    <audio id="sunnyAudio" loop preload="auto">
+                        <source src="audio/sunny.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="rainyAudio" loop preload="auto">
+                        <source src="audio/rain.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="snowyAudio" loop preload="auto">
+                        <source src="audio/snow.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+
+            <!-- 5-Day Weather Forecast -->
+            <div class="forecast-section" id="forecastSection">
+                <h3><i class="fas fa-calendar-alt"></i> 5-Day Weather Forecast</h3>
+                <div class="forecast-container" id="forecastContainer">
+                    <!-- Forecast items will be generated here -->
+                </div>
+            </div>
+
+            <!-- Outfit Recommendations -->
+            <div class="outfit-section" id="outfitSection">
+                <h3><i class="fas fa-tshirt"></i> Outfit Recommendation</h3>
+                <div class="outfit-recommendation" id="outfitRecommendation">
+                    <div class="outfit-items" id="outfitItems"></div>
+                    <p class="outfit-advice" id="outfitAdvice">Get weather data to see recommendations!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Getting weather data...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p id="errorText">Something went wrong!</p>
+            <button id="retryBtn" class="retry-btn">Try Again</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <script>
+        // Test city function
+        function testCity(cityName) {
+            const locationInput = document.getElementById('locationInput');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            if (locationInput) {
+                locationInput.value = cityName;
+                if (searchBtn) {
+                    searchBtn.click();
+                }
+            }
+        }
+        
+        // Auto-demo on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                testCity('Barasat'); // Start with Barasat to show rainy weather
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

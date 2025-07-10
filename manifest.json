@@ -1,0 +1,24 @@
+{
+  "name": "Smart Weather App",
+  "short_name": "Weather",
+  "description": "Your personal weather companion with mood-based UI and outfit recommendations",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#74b9ff",
+  "theme_color": "#0984e3",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23FFD700'/%3E%3Cpath d='M50 15 L50 5 M85 50 L95 50 M50 85 L50 95 M15 50 L5 50 M74.14 25.86 L81.21 18.79 M74.14 74.14 L81.21 81.21 M25.86 74.14 L18.79 81.21 M25.86 25.86 L18.79 18.79' stroke='%23FFD700' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23FFD700'/%3E%3Cpath d='M50 15 L50 5 M85 50 L95 50 M50 85 L50 95 M15 50 L5 50 M74.14 25.86 L81.21 18.79 M74.14 74.14 L81.21 81.21 M25.86 74.14 L18.79 81.21 M25.86 25.86 L18.79 18.79' stroke='%23FFD700' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["weather", "lifestyle", "utilities"],
+  "lang": "en"
+}

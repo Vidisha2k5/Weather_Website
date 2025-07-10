@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Working Version</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Loading and Error Message Styles */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0984e3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #333;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .error-message i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .error-message p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Success message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(39, 174, 96, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-container">
+        <div id="clouds" class="clouds"></div>
+        <div id="rain" class="rain"></div>
+        <div id="snow" class="snow"></div>
+        <div id="sunRays" class="sun-rays"></div>
+        <div id="lightning" class="lightning"></div>
+    </div>
+
+    <div class="weather-container" id="weatherContainer">
+        <div class="weather-card">
+            <h1 style="text-align: center; color: white; margin-bottom: 20px;">
+                🌦️ Weather App
+            </h1>
+
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Enter city name...">
+                </div>
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="currentLocationBtn" class="current-location-btn">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Enter a city name to get weather information!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">--</h2>
+                    <p id="countryName">--</p>
+                    <p id="currentTime">--</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">--°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">--</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">--°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Getting weather data...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p id="errorText">Something went wrong!</p>
+        <button id="retryBtn" class="retry-btn">Try Again</button>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <i class="fas fa-check"></i>
+        <span id="successText">Weather data loaded successfully!</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Enhanced weather app with proper error handling
+        class FixedWeatherApp extends WeatherApp {
+            constructor() {
+                super();
+                this.setupRetryHandler();
+            }
+            
+            setupRetryHandler() {
+                const retryBtn = document.getElementById('retryBtn');
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => {
+                        this.hideError();
+                        this.searchWeather();
+                    });
+                }
+            }
+            
+            displayWeather(data) {
+                try {
+                    console.log('🌦️ Displaying weather data:', data);
+                    
+                    // Update basic weather info
+                    document.getElementById('cityName').textContent = data.location;
+                    document.getElementById('countryName').textContent = data.country;
+                    document.getElementById('currentTime').textContent = new Date().toLocaleString();
+                    document.getElementById('temperature').textContent = `${data.temp}°`;
+                    document.getElementById('feelsLike').textContent = `${data.feelsLike}°`;
+                    document.getElementById('weatherDescription').textContent = data.description;
+                    document.getElementById('weatherIcon').className = `weather-icon ${data.icon}`;
+                    
+                    // Update weather details
+                    document.getElementById('humidity').textContent = `${data.humidity}%`;
+                    document.getElementById('windSpeed').textContent = `${data.windSpeed} km/h`;
+                    document.getElementById('pressure').textContent = `${data.pressure} hPa`;
+                    document.getElementById('visibility').textContent = `${data.visibility} km`;
+
+                    // Apply mood-based theme
+                    this.applyWeatherTheme(data.condition);
+                    
+                    // Update weather quote
+                    this.updateQuote(this.getWeatherQuote(data.condition));
+                    
+                    // Show weather animations (safely)
+                    try {
+                        this.showWeatherAnimation(data.condition);
+                    } catch (animError) {
+                        console.log('ℹ️ Animation error (non-critical):', animError.message);
+                    }
+                    
+                    // Update current weather condition
+                    this.currentWeatherCondition = data.condition;
+                    
+                    // Try to update additional features (safely)
+                    try {
+                        this.generateOutfitRecommendation(data);
+                        this.updateBackgroundMusic(data.condition);
+                        this.updateWeatherMoodUI(data.condition);
+                        this.display5DayForecast(data.location);
+                    } catch (featureError) {
+                        console.log('ℹ️ Optional feature error (non-critical):', featureError.message);
+                    }
+
+                    // Show weather info - This is the most important part!
+                    const weatherInfo = document.getElementById('weatherInfo');
+                    if (weatherInfo) {
+                        weatherInfo.classList.add('active');
+                        console.log('✅ Weather info displayed successfully');
+                        
+                        // Show success message
+                        this.showSuccess(`Weather data loaded for ${data.location}`);
+                    } else {
+                        console.error('❌ Weather info element not found!');
+                        throw new Error('Weather info element not found');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error in displayWeather:', error);
+                    this.showError('Failed to display weather information');
+                }
+            }
+            
+            showSuccess(message) {
+                const successMessage = document.getElementById('successMessage');
+                const successText = document.getElementById('successText');
+                
+                if (successMessage && successText) {
+                    successText.textContent = message;
+                    successMessage.classList.add('active');
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        successMessage.classList.remove('active');
+                    }, 3000);
+                }
+            }
+            
+            showError(message) {
+                // Only show error if weather info is not displayed
+                const weatherInfo = document.getElementById('weatherInfo');
+                if (weatherInfo && weatherInfo.classList.contains('active')) {
+                    console.log('ℹ️ Weather is displaying correctly, not showing error');
+                    return;
+                }
+                
+                super.showError(message);
+            }
+        }
+        
+        // Initialize the fixed weather app
+        document.addEventListener('DOMContentLoaded', () => {
+            new FixedWeatherApp();
+        });
+    </script>
+</body>
+</html>

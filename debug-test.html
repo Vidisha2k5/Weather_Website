@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Mood Player Debug</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container sunny" id="weatherContainer">
+        <!-- Main Weather Card -->
+        <div class="weather-card">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Enter city name..." autocomplete="off">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button id="currentLocationBtn" class="current-location-btn" title="Use current location">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Debug Info -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <h3 style="color: #4CAF50; margin-bottom: 10px;">
+                    <i class="fas fa-bug"></i> Debug Mode
+                </h3>
+                <p style="font-size: 14px; opacity: 0.9;">
+                    Testing Weather Mood Player UI and functionality...
+                </p>
+                <button onclick="testWeatherMood()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-top: 10px;">
+                    Test Weather Mood
+                </button>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Debug mode: Testing Weather Mood Player...</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info active" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">Debug City</h2>
+                    <p id="countryName">Test Country</p>
+                    <p id="currentTime">Debug Time</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">25°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon fas fa-sun"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">sunny</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">28°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Weather Mood Section -->
+            <div class="weather-mood-section sunny" id="weatherMoodSection">
+                <div class="mood-header">
+                    <h3><i class="fas fa-headphones"></i> Weather Mood</h3>
+                    <button id="moodToggle" class="mood-toggle-btn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+                
+                <div class="mood-player" id="moodPlayer">
+                    <!-- Animated Weather Icons -->
+                    <div class="mood-animation sunny" id="moodAnimation">
+                        <div class="weather-particles sunny" id="weatherParticles"></div>
+                        <div class="mood-weather-icon" id="moodWeatherIcon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mood-controls">
+                        <button id="playPauseBtn" class="mood-control-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="mood-info">
+                            <span id="currentMoodTrack">Sunny Day Vibes</span>
+                            <div class="volume-control">
+                                <i class="fas fa-volume-down"></i>
+                                <input type="range" id="volumeSlider" min="0" max="100" value="30" class="volume-slider">
+                                <i class="fas fa-volume-up"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Audio Elements -->
+                <audio id="sunnyAudio" loop preload="auto">
+                    <source src="audio/sunny.mp3" type="audio/mpeg">
+                </audio>
+                <audio id="rainyAudio" loop preload="auto">
+                    <source src="audio/rain.mp3" type="audio/mpeg">
+                </audio>
+                <audio id="snowyAudio" loop preload="auto">
+                    <source src="audio/snow.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <!-- Debug Controls -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <h4 style="color: #FFC107; margin-bottom: 10px;">
+                    <i class="fas fa-sliders-h"></i> Debug Controls
+                </h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <button onclick="testCondition('sunny')" style="background: rgba(255, 193, 7, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        ☀️ Sunny
+                    </button>
+                    <button onclick="testCondition('rainy')" style="background: rgba(33, 150, 243, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        🌧️ Rainy
+                    </button>
+                    <button onclick="testCondition('snowy')" style="background: rgba(158, 158, 158, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        ❄️ Snowy
+                    </button>
+                    <button onclick="testCondition('cloudy')" style="background: rgba(96, 125, 139, 0.3); border: none; padding: 8px 12px; border-radius: 20px; color: white; cursor: pointer;">
+                        ☁️ Cloudy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <script>
+        // Debug functions
+        function testWeatherMood() {
+            console.log('Testing Weather Mood Player...');
+            
+            // Test if elements exist
+            const elements = [
+                'weatherMoodSection',
+                'moodAnimation',
+                'moodWeatherIcon',
+                'weatherParticles',
+                'currentMoodTrack',
+                'moodToggle',
+                'playPauseBtn',
+                'volumeSlider'
+            ];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                console.log(`${id}: ${element ? 'Found' : 'NOT FOUND'}`);
+            });
+            
+            // Test WeatherApp instance
+            if (typeof WeatherApp !== 'undefined') {
+                console.log('WeatherApp class found');
+                // Try to create instance
+                const app = new WeatherApp();
+                console.log('WeatherApp instance created');
+            } else {
+                console.log('WeatherApp class NOT FOUND');
+            }
+        }
+        
+        function testCondition(condition) {
+            console.log(`Testing condition: ${condition}`);
+            
+            const moodSection = document.getElementById('weatherMoodSection');
+            const moodAnimation = document.getElementById('moodAnimation');
+            const moodWeatherIcon = document.getElementById('moodWeatherIcon');
+            const weatherParticles = document.getElementById('weatherParticles');
+            const currentMoodTrack = document.getElementById('currentMoodTrack');
+            const weatherContainer = document.getElementById('weatherContainer');
+            
+            // Update classes
+            if (moodSection) {
+                moodSection.className = `weather-mood-section ${condition}`;
+            }
+            if (moodAnimation) {
+                moodAnimation.className = `mood-animation ${condition}`;
+            }
+            if (weatherParticles) {
+                weatherParticles.className = `weather-particles ${condition}`;
+            }
+            if (weatherContainer) {
+                weatherContainer.className = `weather-container ${condition}`;
+            }
+            
+            // Update icon
+            if (moodWeatherIcon) {
+                const iconMap = {
+                    sunny: 'fas fa-sun',
+                    rainy: 'fas fa-cloud-rain',
+                    snowy: 'fas fa-snowflake',
+                    cloudy: 'fas fa-cloud'
+                };
+                moodWeatherIcon.innerHTML = `<i class="${iconMap[condition] || 'fas fa-cloud'}"></i>`;
+            }
+            
+            // Update track name
+            if (currentMoodTrack) {
+                const trackNames = {
+                    sunny: 'Sunny Day Vibes',
+                    rainy: 'Peaceful Rain Sounds',
+                    snowy: 'Winter Serenity',
+                    cloudy: 'Cloudy Day Ambience'
+                };
+                currentMoodTrack.textContent = trackNames[condition] || 'Weather Ambience';
+            }
+            
+            console.log(`Updated to ${condition} condition`);
+        }
+        
+        // Auto-test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, running initial test...');
+            setTimeout(testWeatherMood, 500);
+        });
+    </script>
+</body>
+</html>

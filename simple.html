@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Weather App Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+        
+        .weather-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .weather-info {
+            margin: 30px 0;
+        }
+        
+        .temperature {
+            font-size: 4rem;
+            font-weight: 300;
+            margin: 20px 0;
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+        
+        .location {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: left;
+        }
+        
+        .quote {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        
+        .outfit {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .outfit-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .outfit-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Animation for weather icons */
+        .weather-icon {
+            font-size: 3rem;
+            margin: 10px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-card">
+        <h1>🌤️ Weather App</h1>
+        
+        <div class="search-container">
+            <input type="text" id="cityInput" placeholder="Enter city name..." />
+            <button onclick="searchWeather()">Search</button>
+        </div>
+        
+        <div id="loadingMessage" class="loading hidden">Getting weather data...</div>
+        
+        <div id="weatherDisplay" class="hidden">
+            <div class="location" id="location">--</div>
+            <div class="weather-icon" id="weatherIcon">☀️</div>
+            <div class="temperature" id="temperature">--°</div>
+            <div class="description" id="description">--</div>
+            
+            <div class="quote" id="quote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Search for a city to get started! 🌟</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+            
+            <div class="details">
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i> Humidity<br>
+                    <strong id="humidity">--%</strong>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i> Wind<br>
+                    <strong id="wind">-- km/h</strong>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i> Pressure<br>
+                    <strong id="pressure">-- hPa</strong>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i> Visibility<br>
+                    <strong id="visibility">-- km</strong>
+                </div>
+            </div>
+            
+            <div class="outfit">
+                <h3><i class="fas fa-tshirt"></i> Outfit Recommendation</h3>
+                <div class="outfit-items" id="outfitItems"></div>
+                <div id="outfitAdvice">Get weather data to see recommendations!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const weatherQuotes = {
+            sunny: [
+                "What a beautiful sunny day! Time to shine! ☀️",
+                "Sunshine is the best medicine for the soul! 🌞",
+                "Perfect weather for outdoor adventures! 🌻"
+            ],
+            rainy: [
+                "Stay cozy! It's raining outside 🌧️",
+                "Perfect weather for a cup of tea and a good book ☕",
+                "Let the rain wash away your worries 💧"
+            ],
+            cloudy: [
+                "Cloudy skies, but bright possibilities ahead! ☁️",
+                "Every cloud has a silver lining! ✨",
+                "Cozy weather for indoor activities 🏠"
+            ],
+            snowy: [
+                "Winter wonderland vibes! Stay warm! ❄️",
+                "Snow brings magic to the world! ⛄",
+                "Perfect weather for hot chocolate! ☕"
+            ]
+        };
+
+        function searchWeather() {
+            const city = document.getElementById('cityInput').value.trim();
+            if (!city) {
+                alert('Please enter a city name!');
+                return;
+            }
+
+            showLoading();
+            
+            // Simulate API call with sample data
+            setTimeout(() => {
+                const sampleData = generateSampleWeather(city);
+                displayWeather(sampleData);
+                hideLoading();
+            }, 1000);
+        }
+
+        function generateSampleWeather(city) {
+            const conditions = ['sunny', 'rainy', 'cloudy', 'snowy'];
+            const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+            
+            const weatherData = {
+                sunny: { temp: 25, icon: '☀️', humidity: 65, wind: 12, pressure: 1013, visibility: 10 },
+                rainy: { temp: 18, icon: '🌧️', humidity: 85, wind: 15, pressure: 1008, visibility: 8 },
+                cloudy: { temp: 22, icon: '☁️', humidity: 70, wind: 8, pressure: 1015, visibility: 12 },
+                snowy: { temp: -2, icon: '❄️', humidity: 90, wind: 20, pressure: 1005, visibility: 5 }
+            };
+
+            const data = weatherData[randomCondition];
+            
+            return {
+                location: city,
+                condition: randomCondition,
+                temperature: data.temp,
+                description: randomCondition === 'sunny' ? 'clear sky' : 
+                           randomCondition === 'rainy' ? 'light rain' :
+                           randomCondition === 'cloudy' ? 'partly cloudy' : 'light snow',
+                icon: data.icon,
+                humidity: data.humidity,
+                wind: data.wind,
+                pressure: data.pressure,
+                visibility: data.visibility
+            };
+        }
+
+        function displayWeather(data) {
+            // Update basic info
+            document.getElementById('location').textContent = data.location;
+            document.getElementById('temperature').textContent = `${data.temperature}°`;
+            document.getElementById('description').textContent = data.description;
+            document.getElementById('weatherIcon').textContent = data.icon;
+            
+            // Update details
+            document.getElementById('humidity').textContent = `${data.humidity}%`;
+            document.getElementById('wind').textContent = `${data.wind} km/h`;
+            document.getElementById('pressure').textContent = `${data.pressure} hPa`;
+            document.getElementById('visibility').textContent = `${data.visibility} km`;
+            
+            // Update quote
+            const quotes = weatherQuotes[data.condition] || weatherQuotes.cloudy;
+            document.getElementById('quoteText').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+            
+            // Generate outfit recommendation
+            generateOutfitRecommendation(data);
+            
+            // Change background based on weather
+            changeBackground(data.condition);
+            
+            // Show weather display
+            document.getElementById('weatherDisplay').classList.remove('hidden');
+        }
+
+        function generateOutfitRecommendation(data) {
+            const temp = data.temperature;
+            const condition = data.condition;
+            let items = [];
+            let advice = '';
+
+            if (temp <= 0) {
+                items = ['🧥 Heavy Coat', '🧣 Scarf', '🧤 Gloves', '👢 Winter Boots'];
+                advice = "Bundle up! It's freezing outside. Layer up with warm clothing.";
+            } else if (temp <= 10) {
+                items = ['🧥 Jacket', '👖 Long Pants', '👟 Closed Shoes'];
+                advice = "Cool weather ahead! A jacket will keep you comfortable.";
+            } else if (temp <= 20) {
+                items = ['🧥 Light Jacket', '👕 Long Sleeve', '👖 Pants'];
+                advice = "Mild temperature - perfect for layering!";
+            } else if (temp <= 30) {
+                items = ['👕 T-Shirt', '🩳 Shorts/Pants', '👟 Sneakers'];
+                advice = "Pleasant weather! Light, comfortable clothing is perfect.";
+            } else {
+                items = ['👕 Light T-Shirt', '🩳 Shorts', '🩴 Sandals', '🧴 Sunscreen'];
+                advice = "It's hot! Stay cool with light clothing and don't forget sunscreen!";
+            }
+
+            if (condition === 'rainy') {
+                items.push('☂️ Umbrella');
+                advice += " Don't forget your umbrella!";
+            } else if (condition === 'sunny') {
+                items.push('🕶️ Sunglasses');
+                advice += " Protect yourself from the sun!";
+            }
+
+            // Display items
+            const itemsContainer = document.getElementById('outfitItems');
+            itemsContainer.innerHTML = '';
+            items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'outfit-item';
+                itemDiv.textContent = item;
+                itemsContainer.appendChild(itemDiv);
+            });
+
+            document.getElementById('outfitAdvice').textContent = advice;
+        }
+
+        function changeBackground(condition) {
+            const backgrounds = {
+                sunny: 'linear-gradient(135deg, #FFD700, #FF6B6B, #74b9ff)',
+                rainy: 'linear-gradient(135deg, #4a69bd, #1e3799, #4a69bd)',
+                cloudy: 'linear-gradient(135deg, #636e72, #2d3436, #636e72)',
+                snowy: 'linear-gradient(135deg, #ddd6fe, #a855f7, #ddd6fe)'
+            };
+            
+            document.body.style.background = backgrounds[condition] || backgrounds.sunny;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingMessage').classList.remove('hidden');
+            document.getElementById('weatherDisplay').classList.add('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingMessage').classList.add('hidden');
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('cityInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchWeather();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Fixed</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container sunny" id="weatherContainer">
+        <div class="weather-card">
+            <h1 style="color: white; text-align: center; margin-bottom: 20px;">🌦️ Weather App - Fixed</h1>
+            
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Enter city name (e.g., Mumbai, Delhi, London)...">
+                </div>
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <!-- Quick Search Buttons -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button onclick="quickSearch('Mumbai')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">Mumbai</button>
+                <button onclick="quickSearch('Delhi')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">Delhi</button>
+                <button onclick="quickSearch('London')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">London</button>
+                <button onclick="quickSearch('New York')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">New York</button>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Enter a city name to get weather information!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">--</h2>
+                    <p id="countryName">--</p>
+                    <p id="currentTime">--</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">--°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">--</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">--°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Display -->
+            <div id="statusDisplay" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 20px; color: white;">
+                <h4>Status: <span id="statusText">Ready - Enter a city name</span></h4>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Override the showError function to be more visible
+        const originalWeatherApp = window.WeatherApp;
+        
+        // Add quick search functionality
+        function quickSearch(city) {
+            const input = document.getElementById('locationInput');
+            input.value = city;
+            // Trigger search
+            if (window.weatherAppInstance) {
+                window.weatherAppInstance.searchWeather();
+            }
+        }
+        
+        // Override the WeatherApp to add status updates
+        class EnhancedWeatherApp extends WeatherApp {
+            constructor() {
+                super();
+                window.weatherAppInstance = this;
+            }
+            
+            updateStatus(message) {
+                const statusText = document.getElementById('statusText');
+                if (statusText) {
+                    statusText.textContent = message;
+                }
+                console.log('Status:', message);
+            }
+            
+            searchWeather() {
+                const location = document.getElementById('locationInput').value.trim();
+                if (!location) {
+                    this.updateStatus('Error: Please enter a city name');
+                    return;
+                }
+
+                this.updateStatus(`Searching for weather in ${location}...`);
+                
+                try {
+                    // For demo purposes, we'll use sample data
+                    const weatherData = this.getSampleWeatherData(location);
+                    this.updateStatus(`Weather data found for ${location}`);
+                    this.displayWeather(weatherData);
+                    this.updateStatus(`Weather display complete for ${location}`);
+                } catch (error) {
+                    this.updateStatus(`Error: Failed to fetch weather data - ${error.message}`);
+                }
+            }
+            
+            displayWeather(data) {
+                this.updateStatus('Displaying weather information...');
+                
+                try {
+                    // Update basic weather info
+                    document.getElementById('cityName').textContent = data.location;
+                    document.getElementById('countryName').textContent = data.country;
+                    document.getElementById('currentTime').textContent = new Date().toLocaleString();
+                    document.getElementById('temperature').textContent = `${data.temp}°`;
+                    document.getElementById('feelsLike').textContent = `${data.feelsLike}°`;
+                    document.getElementById('weatherDescription').textContent = data.description;
+                    document.getElementById('weatherIcon').className = `weather-icon ${data.icon}`;
+                    
+                    // Update weather details
+                    document.getElementById('humidity').textContent = `${data.humidity}%`;
+                    document.getElementById('windSpeed').textContent = `${data.windSpeed} km/h`;
+                    document.getElementById('pressure').textContent = `${data.pressure} hPa`;
+                    document.getElementById('visibility').textContent = `${data.visibility} km`;
+
+                    // Apply mood-based theme
+                    this.applyWeatherTheme(data.condition);
+                    
+                    // Update weather quote
+                    this.updateQuote(this.getWeatherQuote(data.condition));
+                    
+                    // Show weather animations
+                    this.showWeatherAnimation(data.condition);
+                    
+                    // Update current weather condition
+                    this.currentWeatherCondition = data.condition;
+                    
+                    // Show weather info by adding active class
+                    const weatherInfo = document.getElementById('weatherInfo');
+                    weatherInfo.classList.add('active');
+                    
+                    this.updateStatus(`Successfully displaying weather for ${data.location}`);
+                    
+                } catch (error) {
+                    this.updateStatus(`Error displaying weather: ${error.message}`);
+                    console.error('Error in displayWeather:', error);
+                }
+            }
+            
+            showError(message) {
+                this.updateStatus(`Error: ${message}`);
+                super.showError(message);
+            }
+        }
+        
+        // Initialize the enhanced app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new EnhancedWeatherApp();
+        });
+    </script>
+</body>
+</html>

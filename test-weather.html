@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Test - Barasat Rainy Check</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container" id="weatherContainer">
+        <!-- Background Animation Container -->
+        <div class="animation-container" id="animationContainer">
+            <div class="clouds" id="clouds"></div>
+            <div class="rain" id="rain"></div>
+            <div class="snow" id="snow"></div>
+            <div class="lightning" id="lightning"></div>
+            <div class="sun-rays" id="sunRays"></div>
+        </div>
+
+        <!-- Main Weather Card -->
+        <div class="weather-card">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Try 'Barasat' to test rainy weather..." autocomplete="off">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button id="currentLocationBtn" class="current-location-btn" title="Use current location">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Test Instructions -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <h3 style="color: #4CAF50; margin-bottom: 10px;">
+                    <i class="fas fa-check-circle"></i> Weather Data Test
+                </h3>
+                <p style="font-size: 14px; opacity: 0.9;">
+                    🌧️ <strong>Barasat</strong> should show <strong>rainy weather</strong><br>
+                    ☀️ <strong>Dubai</strong> should show <strong>sunny weather</strong><br>
+                    ☁️ <strong>London</strong> should show <strong>cloudy weather</strong>
+                </p>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Enter 'Barasat' to verify rainy weather fix!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">--</h2>
+                    <p id="countryName">--</p>
+                    <p id="currentTime">--</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">--°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">--</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">--°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Music Player -->
+            <div class="music-player" id="musicPlayer">
+                <button id="musicToggle" class="music-toggle">
+                    <i class="fas fa-music"></i>
+                    <span>Weather Mood</span>
+                </button>
+                <div class="music-controls" id="musicControls">
+                    <div class="music-info">
+                        <i class="fas fa-music"></i>
+                        <span id="currentSong">Happy Weather Vibes</span>
+                    </div>
+                    <div class="music-mood" id="musicMood">
+                        <i class="fas fa-heart"></i>
+                        <span id="songMood">Feel the happiness!</span>
+                    </div>
+                    <div class="music-buttons">
+                        <button id="prevSong" class="music-btn">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button id="playPause" class="music-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button id="nextSong" class="music-btn">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <button id="shuffleSongs" class="music-btn">
+                            <i class="fas fa-random"></i>
+                        </button>
+                    </div>
+                    <div class="music-stats" id="musicStats">
+                        <div class="stat-item">
+                            <i class="fas fa-list"></i>
+                            <span id="songCount">8 songs</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-cloud"></i>
+                            <span id="weatherType">Sunny</span>
+                        </div>
+                    </div>
+                </div>
+                <audio id="weatherAudio" loop>
+                    <source id="audioSource" src="" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <!-- 5-Day Weather Forecast -->
+            <div class="forecast-section" id="forecastSection">
+                <h3><i class="fas fa-calendar-alt"></i> 5-Day Weather Forecast</h3>
+                <div class="forecast-container" id="forecastContainer">
+                    <!-- Forecast items will be generated here -->
+                </div>
+            </div>
+
+            <!-- Outfit Recommendations -->
+            <div class="outfit-section" id="outfitSection">
+                <h3><i class="fas fa-tshirt"></i> Outfit Recommendation</h3>
+                <div class="outfit-recommendation" id="outfitRecommendation">
+                    <div class="outfit-items" id="outfitItems"></div>
+                    <p class="outfit-advice" id="outfitAdvice">Get weather data to see recommendations!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Getting weather data...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p id="errorText">Something went wrong!</p>
+            <button id="retryBtn" class="retry-btn">Try Again</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <script>
+        // Auto-test Barasat weather on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const locationInput = document.getElementById('locationInput');
+                if (locationInput) {
+                    locationInput.value = 'Barasat';
+                    // Trigger search to show Barasat weather
+                    const searchBtn = document.getElementById('searchBtn');
+                    if (searchBtn) {
+                        searchBtn.click();
+                    }
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

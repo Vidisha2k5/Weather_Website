@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current State Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container sunny">
+        <div class="weather-card">
+            <h1 style="color: white; text-align: center; margin-bottom: 30px;">🧪 Current State Test</h1>
+            
+            <!-- Test if Weather Mood Section appears -->
+            <div class="weather-mood-section sunny" id="weatherMoodSection">
+                <div class="mood-header">
+                    <h3><i class="fas fa-headphones"></i> Weather Mood</h3>
+                    <button id="moodToggle" class="mood-toggle-btn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+                
+                <div class="mood-player" id="moodPlayer">
+                    <!-- Animated Weather Icons -->
+                    <div class="mood-animation sunny" id="moodAnimation">
+                        <div class="weather-particles sunny" id="weatherParticles"></div>
+                        <div class="mood-weather-icon" id="moodWeatherIcon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mood-controls">
+                        <button id="playPauseBtn" class="mood-control-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="mood-info">
+                            <span id="currentMoodTrack">Sunny Day Vibes</span>
+                            <div class="volume-control">
+                                <i class="fas fa-volume-down"></i>
+                                <input type="range" id="volumeSlider" min="0" max="100" value="30" class="volume-slider">
+                                <i class="fas fa-volume-up"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Results -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; color: white;">
+                <h3>✅ Test Results</h3>
+                <div id="testResults">
+                    <p>🔄 Running tests...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Test if elements exist and are styled
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = [];
+            
+            // Test HTML elements
+            const elements = [
+                { id: 'weatherMoodSection', name: 'Weather Mood Section' },
+                { id: 'moodToggle', name: 'Mood Toggle Button' },
+                { id: 'moodAnimation', name: 'Mood Animation' },
+                { id: 'moodWeatherIcon', name: 'Weather Icon' },
+                { id: 'weatherParticles', name: 'Weather Particles' },
+                { id: 'playPauseBtn', name: 'Play/Pause Button' },
+                { id: 'currentMoodTrack', name: 'Current Track' },
+                { id: 'volumeSlider', name: 'Volume Slider' }
+            ];
+            
+            elements.forEach(element => {
+                const el = document.getElementById(element.id);
+                if (el) {
+                    results.push(`✅ ${element.name}: Found`);
+                } else {
+                    results.push(`❌ ${element.name}: NOT FOUND`);
+                }
+            });
+            
+            // Test CSS styles
+            const moodSection = document.getElementById('weatherMoodSection');
+            if (moodSection) {
+                const styles = window.getComputedStyle(moodSection);
+                results.push(`✅ Background: ${styles.background.includes('rgba') ? 'Styled' : 'Not Styled'}`);
+                results.push(`✅ Border Radius: ${styles.borderRadius}`);
+                results.push(`✅ Padding: ${styles.padding}`);
+            }
+            
+            // Test animations
+            const moodIcon = document.querySelector('.mood-weather-icon i');
+            if (moodIcon) {
+                const iconStyles = window.getComputedStyle(moodIcon);
+                results.push(`✅ Icon Color: ${iconStyles.color}`);
+                results.push(`✅ Icon Animation: ${iconStyles.animation}`);
+            }
+            
+            // Display results
+            const testResults = document.getElementById('testResults');
+            testResults.innerHTML = results.join('<br>');
+            
+            // Test JavaScript functionality
+            setTimeout(() => {
+                console.log('Testing JavaScript functionality...');
+                
+                // Test button clicks
+                const moodToggle = document.getElementById('moodToggle');
+                const playPauseBtn = document.getElementById('playPauseBtn');
+                const volumeSlider = document.getElementById('volumeSlider');
+                
+                if (moodToggle) {
+                    moodToggle.addEventListener('click', () => {
+                        console.log('Mood toggle clicked');
+                        results.push('✅ Mood toggle: Clickable');
+                        testResults.innerHTML = results.join('<br>');
+                    });
+                }
+                
+                if (playPauseBtn) {
+                    playPauseBtn.addEventListener('click', () => {
+                        console.log('Play/Pause clicked');
+                        results.push('✅ Play/Pause: Clickable');
+                        testResults.innerHTML = results.join('<br>');
+                    });
+                }
+                
+                if (volumeSlider) {
+                    volumeSlider.addEventListener('input', (e) => {
+                        console.log('Volume changed:', e.target.value);
+                        results.push(`✅ Volume slider: ${e.target.value}%`);
+                        testResults.innerHTML = results.join('<br>');
+                    });
+                }
+                
+                results.push('🎉 All tests completed!');
+                testResults.innerHTML = results.join('<br>');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

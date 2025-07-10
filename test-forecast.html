@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - 5-Day Forecast Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="forecast.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container sunny" id="weatherContainer">
+        <div class="weather-card">
+            <h1 style="color: white; text-align: center; margin-bottom: 20px;">
+                🌦️ Weather App - 5-Day Forecast Test
+            </h1>
+
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Enter city name..." value="Mumbai">
+                </div>
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Test Buttons -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button onclick="testForecast('Mumbai')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">Test Mumbai</button>
+                <button onclick="testForecast('London')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">Test London</button>
+                <button onclick="testForecast('New York')" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 15px; color: white; cursor: pointer;">Test New York</button>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Click a test button to see the 5-day forecast!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info active" id="weatherInfo">
+                <div class="location-info">
+                    <h2 id="cityName">Mumbai</h2>
+                    <p id="countryName">India</p>
+                    <p id="currentTime">Current: 27°C - Heavy Rain</p>
+                </div>
+            </div>
+
+            <!-- 5-Day Weather Forecast -->
+            <div class="forecast-section" id="forecastSection">
+                <h3><i class="fas fa-calendar-alt"></i> 5-Day Forecast</h3>
+                <div class="forecast-container" id="forecastContainer">
+                    <!-- Forecast items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Status Display -->
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-top: 20px; color: white; font-family: monospace; font-size: 14px;">
+                <strong>Status:</strong> <span id="statusText">Ready to test forecast</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let weatherApp;
+
+        // Test function
+        function testForecast(city) {
+            document.getElementById('statusText').textContent = `Testing forecast for ${city}...`;
+            
+            // Set the city in the input
+            document.getElementById('locationInput').value = city;
+            document.getElementById('cityName').textContent = city;
+            
+            // Create weather app instance if not exists
+            if (!weatherApp) {
+                weatherApp = new WeatherApp();
+            }
+            
+            // Test the forecast generation
+            try {
+                const forecast = weatherApp.get5DayForecast(city);
+                console.log('Generated forecast:', forecast);
+                
+                weatherApp.display5DayForecast(city);
+                document.getElementById('statusText').textContent = `✅ Forecast loaded for ${city}`;
+                
+                // Update quote
+                document.getElementById('quoteText').textContent = `Here's your 5-day forecast for ${city}!`;
+                
+            } catch (error) {
+                console.error('Error testing forecast:', error);
+                document.getElementById('statusText').textContent = `❌ Error loading forecast: ${error.message}`;
+            }
+        }
+
+        // Auto-test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Forecast Test Page loaded');
+            
+            // Auto-test after 1 second
+            setTimeout(() => {
+                testForecast('Mumbai');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

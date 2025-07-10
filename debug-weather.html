@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App Debug</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="weather-container" id="weatherContainer">
+        <div class="weather-card">
+            <h1 style="color: white; text-align: center; margin-bottom: 20px;">🐛 Weather Debug Test</h1>
+            
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="locationInput" placeholder="Enter city name..." value="Mumbai">
+                </div>
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <!-- Debug Info -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="color: white; margin-bottom: 10px;">Debug Info:</h3>
+                <div id="debugInfo" style="color: white; font-size: 14px;">
+                    <p>Click search to test weather display</p>
+                </div>
+            </div>
+
+            <!-- Weather Quote -->
+            <div class="weather-quote" id="weatherQuote">
+                <i class="fas fa-quote-left"></i>
+                <span id="quoteText">Let's check the weather!</span>
+                <i class="fas fa-quote-right"></i>
+            </div>
+
+            <!-- Main Weather Info -->
+            <div class="weather-info" id="weatherInfo" style="border: 2px solid rgba(255,255,255,0.3); padding: 10px; border-radius: 10px;">
+                <div class="location-info">
+                    <h2 id="cityName">--</h2>
+                    <p id="countryName">--</p>
+                    <p id="currentTime">--</p>
+                </div>
+
+                <div class="temperature-section">
+                    <div class="main-temp">
+                        <span id="temperature">--°</span>
+                        <div class="weather-icon-container">
+                            <i id="weatherIcon" class="weather-icon"></i>
+                        </div>
+                    </div>
+                    <div class="temp-details">
+                        <p id="weatherDescription">--</p>
+                        <p class="feels-like">Feels like <span id="feelsLike">--°</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Details Grid -->
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="windSpeed">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Debug version of the weather app
+        class WeatherAppDebug {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.logDebug('App initialized');
+            }
+
+            bindEvents() {
+                const searchBtn = document.getElementById('searchBtn');
+                const locationInput = document.getElementById('locationInput');
+
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', () => this.searchWeather());
+                    this.logDebug('Search button event bound');
+                }
+                
+                if (locationInput) {
+                    locationInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') this.searchWeather();
+                    });
+                    this.logDebug('Location input event bound');
+                }
+            }
+
+            logDebug(message) {
+                const debugInfo = document.getElementById('debugInfo');
+                const timestamp = new Date().toLocaleTimeString();
+                debugInfo.innerHTML += `<p>[${timestamp}] ${message}</p>`;
+                console.log(`[DEBUG] ${message}`);
+            }
+
+            searchWeather() {
+                const location = document.getElementById('locationInput').value.trim();
+                this.logDebug(`Searching weather for: ${location}`);
+                
+                if (!location) {
+                    this.logDebug('ERROR: No location entered');
+                    return;
+                }
+
+                // Get sample weather data
+                const weatherData = this.getSampleWeatherData(location);
+                this.logDebug(`Weather data retrieved: ${JSON.stringify(weatherData)}`);
+                
+                // Display weather
+                this.displayWeather(weatherData);
+            }
+
+            getSampleWeatherData(location) {
+                const data = {
+                    location: location,
+                    country: 'India',
+                    temp: 27,
+                    feelsLike: 31,
+                    description: 'heavy rain',
+                    icon: 'fas fa-cloud-rain',
+                    condition: 'rainy',
+                    humidity: 92,
+                    windSpeed: 18,
+                    pressure: 1004,
+                    visibility: 4
+                };
+                
+                this.logDebug('Sample weather data created');
+                return data;
+            }
+
+            displayWeather(data) {
+                this.logDebug('Starting displayWeather function');
+                
+                try {
+                    // Update basic weather info
+                    document.getElementById('cityName').textContent = data.location;
+                    document.getElementById('countryName').textContent = data.country;
+                    document.getElementById('currentTime').textContent = new Date().toLocaleString();
+                    document.getElementById('temperature').textContent = `${data.temp}°`;
+                    document.getElementById('feelsLike').textContent = `${data.feelsLike}°`;
+                    document.getElementById('weatherDescription').textContent = data.description;
+                    document.getElementById('weatherIcon').className = `weather-icon ${data.icon}`;
+                    
+                    this.logDebug('Basic weather info updated');
+                    
+                    // Update weather details
+                    document.getElementById('humidity').textContent = `${data.humidity}%`;
+                    document.getElementById('windSpeed').textContent = `${data.windSpeed} km/h`;
+                    document.getElementById('pressure').textContent = `${data.pressure} hPa`;
+                    document.getElementById('visibility').textContent = `${data.visibility} km`;
+                    
+                    this.logDebug('Weather details updated');
+                    
+                    // Show weather info
+                    const weatherInfo = document.getElementById('weatherInfo');
+                    weatherInfo.classList.add('active');
+                    this.logDebug(`Weather info active class added. Classes: ${weatherInfo.className}`);
+                    
+                    // Apply theme
+                    this.applyWeatherTheme(data.condition);
+                    
+                    this.logDebug('Weather display completed successfully');
+                    
+                } catch (error) {
+                    this.logDebug(`ERROR in displayWeather: ${error.message}`);
+                    console.error('Error in displayWeather:', error);
+                }
+            }
+
+            applyWeatherTheme(condition) {
+                const container = document.getElementById('weatherContainer');
+                container.className = 'weather-container';
+                container.classList.add(condition);
+                this.logDebug(`Theme applied: ${condition}`);
+            }
+        }
+
+        // Initialize the debug app
+        document.addEventListener('DOMContentLoaded', () => {
+            new WeatherAppDebug();
+        });
+    </script>
+</body>
+</html>

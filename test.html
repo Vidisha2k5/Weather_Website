@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .test-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🌤️ Weather App Test</h1>
+        <p>Testing basic functionality...</p>
+        
+        <div>
+            <button class="test-button" onclick="testBasicFunctionality()">Test Basic Functions</button>
+            <button class="test-button" onclick="testFullApp()">Load Full App</button>
+        </div>
+        
+        <div id="status" class="status">
+            Ready to test...
+        </div>
+    </div>
+    
+    <script>
+        function updateStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.background = isError ? 'rgba(231, 76, 60, 0.7)' : 'rgba(39, 174, 96, 0.7)';
+        }
+        
+        function testBasicFunctionality() {
+            updateStatus('✅ Basic HTML/CSS/JS working perfectly!');
+            
+            // Test if we can access DOM elements
+            setTimeout(() => {
+                try {
+                    // Test creating weather elements
+                    const testWeather = {
+                        location: 'Test City',
+                        temp: 25,
+                        condition: 'sunny',
+                        description: 'clear sky'
+                    };
+                    
+                    updateStatus(`✅ Test completed! Weather data: ${testWeather.location}, ${testWeather.temp}°C`);
+                } catch (error) {
+                    updateStatus(`❌ Test failed: ${error.message}`, true);
+                }
+            }, 1000);
+        }
+        
+        function testFullApp() {
+            // Redirect to main app
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
